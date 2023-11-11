@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import NavBar from './components/navbar/NavBar';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Register from './pages/register/Register';
+import Login from './pages/login/Login';
+import TaskList from './pages/task-list/TaskList';
+import CreateTask from './pages/create-task/CreateTask';
+import { useEffect, useState } from "react";
 
 function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      setCurrentUser(JSON.parse(user));
+    }
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <NavBar
+          currentUser={currentUser}
+          setCurrentUser={(user) => setCurrentUser(user)} />
+        <Routes>
+          <Route path='/register' element={<Register />} />
+          <Route path='/login' element={<Login setCurrentUser={(user) => setCurrentUser(user)} />} />
+          <Route path='/tasks' element={<TaskList />} />
+          <Route path='/create-task' element={<CreateTask />} />
+          <Route path='/edit-task/:id' element={<CreateTask />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
